@@ -1,6 +1,6 @@
 # SEUCPC Printer Client
 
-This is a printer-client for ICPC/CCPC-like contest in Windows.
+This is a printer-client for ICPC/CCPC-like contest on Windows.
 
 ## Instruction
 
