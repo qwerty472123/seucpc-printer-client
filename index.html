@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <title>打印服务</title>
+    <link rel="stylesheet" href="./index.css" type="text/css" />
+</head>
+
+<body>
+    <div id="wrap"></div>
+    <div id="Bar">
+        <h1 id="assisttip">(专注助手已启用)</h1>
+        <h1 id="title">打印服务 - 东南大学程序设计类竞赛俱乐部</h1>
+        <div id="btnimg" style="background: url(./btn.png) left top no-repeat scroll;
+        display: block;
+        height: 34px;
+        width: 133px;
+        background-position: -17px top;" src="./btn.png"></div>
+        <div id="buttons">
+            <div id="min"></div>
+            <div id="max"></div>
+            <div id="close" style="width:47px"></div>
+        </div>
+    </div>
+    <div id="inner">
+        <div id="loadbox" class="handle">
+            <div class="hdiv"></div>
+            <div id="loadapp">
+                <div class="loader"></div>
+                <h2>打印服务 - 东南大学程序设计类竞赛俱乐部</h2>
+            </div>
+        </div>
+        <div id="login" class="handle" style="display:none">
+            <div class="hh">
+                <h2 id="errpwd" style="display:none">
+                    <b>密码</b> 错误
+                </h2>
+                <div class="main">
+                    <form action="#" onsubmit="return doSubmit()">
+                        <input type="text" id="username" placeholder="用户名" autocomplete="username">
+                        <input type="password" id="pwd" placeholder="密码" autocomplete="current-password">
+                        <input type="submit" value="登录">
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div id="sender" class="handle" style="display: none;">
+            <div class="hh">
+                <div class="main">
+                    <form action="#" onsubmit="return senderSend()">
+                        <input type="text" id="sender_message" placeholder="消息内容">
+                        <input type="submit" id="sender_send" value="发送">
+                        <input type="submit" id="sender_back" value="返回">
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div id="printer" class="handle" style="display:none">
+            <div class="hh">
+                <h2 id="prtinfo" style="display:none; margin-bottom: 0;">
+                    <b>打印</b> 成功
+                </h2>
+                <div class="main" style="padding: 10px; left: 0; right: 0">
+                    <form action="#" onsubmit="return doPrint()" class="flexup">
+                        <div id="uploadBox">
+                            拖入或者点击上传待打印文件
+                        </div>
+                        <div class="buttons">
+                            <div style="line-height: 35px;">
+                                <p id="prtcc" style="display: none;">
+                                    <input type="text" id="prtname" style="margin-bottom: auto;
+                                    width: 75px;
+                                    margin-right: 5px;" placeholder="打印机名">
+                                    <input type="submit" id="prtchange" value="指派">
+                                </p>
+                                <p id="prtsimple" style="display: none;">
+                                    <input type="submit" id="prttip" value="通知志愿者">
+                                </p>
+                                <input type="submit" id="prtadmin" value="通知" style="display: none;">
+                                <input type="submit" id="prtpaste" value="打印粘贴板内容">
+                                <br />
+                                <input type="submit" value="打印文件">
+                                <input type="submit" id="logout" value="登出">
+                            </div>
+                            <div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript" >if (typeof module === 'object') { window.module = module; module = undefined; }</script>
+
+        <script type="text/javascript" src="./jquery.js"></script>
+        <script type="text/javascript" src="./socket.io/socket.io.js"></script>
+
+        <script type="text/javascript" >if (window.module) module = window.module;</script>
+
+        <script type="text/javascript" src="./index.js"></script>
+</body>
+
+</html>

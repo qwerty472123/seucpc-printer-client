@@ -1,0 +1,32 @@
+{
+  "devDependencies": {
+    "electron": "^10.1.4",
+    "electron-builder": "^22.9.1",
+    "electron-rebuild": "^2.3.2"
+  },
+  "build": {
+    "productName": "SEUCPC Printer",
+    "appId": "club.seucpc.printer",
+    "nsis": {
+      "artifactName": "${productName} Setup.${ext}"
+    }
+  },
+  "name": "printer",
+  "version": "1.0.0",
+  "main": "main.js",
+  "dependencies": {
+    "electron-prompt": "^1.6.0",
+    "node-notifier": "^8.0.0",
+    "windows-focus-assist": "^1.2.1"
+  },
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "rebuild": "electron-rebuild"
+  },
+  "keywords": [],
+  "author": "seucpc",
+  "license": "ISC",
+  "description": "A electron version of web printer client."
+}
