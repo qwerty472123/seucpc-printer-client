@@ -293,12 +293,16 @@ I('logout').onclick = function () {
 };
 I('prtpaste').onclick = function () {
 	let menu = new Menu();
-	let langs = ['plain', 'c', 'cpp', 'java', 'py', 'javascript', 'csharp'];
+	let langs = ['plain', 'c', 'cpp', 'java', 'py', 'javascript', 'csharp', 'markdown'];
 	for (let lang of langs) {
 		let cl = lang;
 		menu.append(new MenuItem({
 			label: cl,
 			click() {
+				boxCC.text = '当前内容：(粘贴板)';
+				boxCC.px = 10
+				boxCC.color = '#eee'
+				boxCC.refresh()
 				let xhr = new XMLHttpRequest();
 				xhr.open("post", web + "print_text");
 				xhr.onreadystatechange = function () {
@@ -534,6 +538,12 @@ let boxCnter = new BoxCnter();
 
 
 let file = null;
+function refreshNewFile() {
+	boxCC.text = '当前文件：' + file.name;
+	boxCC.px = 10
+	boxCC.color = '#eee'
+	boxCC.refresh()
+}
 function newFile(newFile) {
 	if (newFile === null) {
 		file = null;
@@ -542,10 +552,7 @@ function newFile(newFile) {
 	}
 	file = newFile;
 	console.log('New file: ', file);
-	boxCC.text = '当前文件：' + file.name;
-	boxCC.px = 10
-	boxCC.color = '#eee'
-	boxCC.refresh()
+	refreshNewFile();
 }
 I('uploadBox').onclick = function () {
 	let old = boxCC.state
@@ -604,6 +611,7 @@ function doPrint() {
 		info('拖入或者点击上传待打印文件', "prtinfo");
 		return false;
 	}
+	refreshNewFile();
 	let xhr = new XMLHttpRequest();
 	xhr.open("post", web + "print");
 	xhr.onreadystatechange = function () {
