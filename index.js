@@ -125,6 +125,8 @@ let socket = null;
 let heartbeatTimer = null;
 let send_queue = [];
 let socket_box_err = null;
+let sides = 'one-sided';
+let prtCnt = 1;
 
 function socketSender(to, message) {
 	try {
@@ -207,7 +209,7 @@ function switchPage(boxId, noMore = false) {
 			cfg = e.cfg;
 			if (cfg.admin) {
 				I('prtname').value = cfg.printer;
-				I('prtname').style.borderColor = null;
+				I('prtname').style.borderColor = '#65e05d';
 				$('#prtcc').show();
 				$('#prtadmin').show();
 			} else {
@@ -319,8 +321,7 @@ I('prtpaste').onclick = function () {
 					info('<b>网络</b> 异常', "prtinfo");
 				};
 				xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-				xhr.send('jwt=' + encodeURIComponent(jwt) + '&buffer=' + encodeURIComponent(clipboard.readText()) + '&type=' + encodeURIComponent(cl));
+				xhr.send('jwt=' + encodeURIComponent(jwt) + '&buffer=' + encodeURIComponent(clipboard.readText()) + '&type=' + encodeURIComponent(cl) + "&cnt=" + encodeURIComponent(prtCnt) + "&sides=" + encodeURIComponent(sides));
 			}
 		}));
 	}
@@ -559,10 +560,10 @@ I('uploadBox').onclick = function () {
 		title: '请选择待打印文件',
 		properties: ['openFile'],
 		filters: [
-			{ name: '常见待打印文件', extensions: ['cc', 'c', 'cpp', 'java', 'py', 'js', '', 'markdown', 'h', 'hpp', 'bdy', 'inc', 'pas', 'pp', 'cs', 'html', 'htm', 'css', 'sh', 'cmd', 'bat', 'lua', 'sql', ' as', 'vb', 'vbs', 'cmd', 'pl', 'php', 'pdf', 'md', 'markdown', 'txt', 'log', 'in', 'out'] },
+			{ name: '常见待打印文件', extensions: ['cc', 'c', 'cpp', 'java', 'py', 'js', 'markdown', 'h', 'hpp', 'bdy', 'inc', 'pas', 'pp', 'cs', 'html', 'htm', 'css', 'sh', 'cmd', 'bat', 'lua', 'sql', ' as', 'vb', 'vbs', 'cmd', 'pl', 'php', 'pdf', 'md', 'markdown', 'txt', 'log', 'in', 'out'] },
 			{ name: 'PDF 文件', extensions: ['pdf'] },
 			{ name: 'Markdown 文件', extensions: ['md', 'markdown'] },
-			{ name: '代码文件', extensions: ['cc', 'c', 'cpp', 'java', 'py', 'js', '', 'markdown', 'h', 'hpp', 'bdy', 'inc', 'pas', 'pp', 'cs', 'html', 'htm', 'css', 'sh', 'cmd', 'bat', 'lua', 'sql', ' as', 'vb', 'vbs', 'cmd', 'pl', 'php'] },
+			{ name: '代码文件', extensions: ['cc', 'c', 'cpp', 'java', 'py', 'js', 'markdown', 'h', 'hpp', 'bdy', 'inc', 'pas', 'pp', 'cs', 'html', 'htm', 'css', 'sh', 'cmd', 'bat', 'lua', 'sql', ' as', 'vb', 'vbs', 'cmd', 'pl', 'php'] },
 			{ name: '文本文件', extensions: ['txt', 'log', 'in', 'out'] },
 			{ name: '任意文件', extensions: ['*'] }
 		]
@@ -627,13 +628,90 @@ function doPrint() {
 	let data = new FormData();
 	data.append("jwt", jwt);
 	data.append("pdf", file);
+	data.append("cnt", prtCnt);
+	data.append("sides", sides);
 	xhr.send(data);
 	return false;
 }
 
-$("#prtchange").click(() => {
+I('prtname').onchange = I('prtname').onkeypress = I('prtname').oninput = function() {
+	if (I('prtname').value !== cfg.printer) I('prtname').style.borderColor = null;
+	else I('prtname').style.borderColor = '#65e05d';
+};
+
+function setPrinterName() {
+	let new_name = I('prtname').value;
 	$.post(web + 'set_printer', { jwt: jwt, printer: I('prtname').value }, e => {
 		I('prtname').style.borderColor = e.success ? '#65e05d' : '#fd6075';
+		if (e.success) cfg.printer = new_name;
 	}, 'json');
+}
+
+$("#prtsettings").click(() => {
+	let menu = new Menu();
+	menu.append(new MenuItem({
+		label: '设置使用的打印机名',
+		click() {
+			setPrinterName();
+		},
+		type: 'checkbox',
+		checked: I('prtname').value === cfg.printer
+	}));
+	let types = [['one-sided', '单面打印'], ['two-sided-short-edge', '短边翻转'], ['two-sided-long-edge', '长边翻转']];
+	let sideMenu = new Menu();
+	for(let item of types) {
+		let type = item;
+		sideMenu.append(new MenuItem({
+			label: type[1],
+			checked: sides === type[0],
+			type: 'checkbox',
+			click() {
+				sides = type[0];
+			}
+		}));
+	}
+	menu.append(new MenuItem({
+		label: '设置翻页方式',
+		submenu: sideMenu,
+		checked: I('prtname').value === cfg.printer
+	}));
+	let cntMod = [], cntSet = new Set();
+	function addCntMod(cnt, name) {
+		if (cntSet.has(cnt) || cnt < 1) return;
+		cntSet.add(cnt);
+		cntMod.push([cnt + ' (' + name + ')', cnt]);
+	}
+	addCntMod(1, '默认值');
+	addCntMod(prtCnt, '当前值');
+	let deltas = [12, 10, 9, 6, 3, 1, 2];
+	for(let delta of deltas) {
+		addCntMod(prtCnt + delta, '+' + delta);
+		addCntMod(prtCnt - delta, '-' + delta);
+	}
+	cntMod.sort((a,b)=>{
+		return a[1]-b[1];
+	});
+	let sideMenu2 = new Menu();
+	for(let item of cntMod) {
+		let cnt = item[1];
+		sideMenu2.append(new MenuItem({
+			label: item[0],
+			checked: prtCnt == cnt,
+			type: 'checkbox',
+			click() {
+				prtCnt = cnt;
+			}
+		}));
+	}
+	menu.append(new MenuItem({
+		label: '设置页面数量',
+		submenu: sideMenu2,
+		checked: I('prtname').value === cfg.printer
+	}));
+	console.log(menu)
+	menu.popup({
+		x: pageX(I('prtsettings')),
+		y: pageY(I('prtsettings')) - 36
+	});
 	return false
 });
