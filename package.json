@@ -8,7 +8,8 @@
     "productName": "SEUCPC Printer",
     "appId": "club.seucpc.printer",
     "nsis": {
-      "artifactName": "${productName} Setup.${ext}"
+      "artifactName": "${productName} Setup.${ext}",
+      "deleteAppDataOnUninstall": true
     }
   },
   "name": "printer",
