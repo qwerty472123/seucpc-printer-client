@@ -563,12 +563,21 @@ I('uploadBox').onclick = function () {
 		window.removeEventListener('focus', reold)
 		boxCC.state = old;
 	}
+	if (cfg.admin) {
+
+	}
 	dialog.showOpenDialog(win, {
 		title: '请选择待打印文件',
 		properties: ['openFile'],
-		filters: [
+		filters: cfg.admin ? [
 			{ name: '常见待打印文件', extensions: ['cc', 'c', 'cpp', 'java', 'py', 'js', 'markdown', 'h', 'hpp', 'bdy', 'inc', 'pas', 'pp', 'cs', 'html', 'htm', 'css', 'sh', 'cmd', 'bat', 'lua', 'sql', ' as', 'vb', 'vbs', 'cmd', 'pl', 'php', 'pdf', 'md', 'markdown', 'txt', 'log', 'in', 'out'] },
 			{ name: 'PDF 文件', extensions: ['pdf'] },
+			{ name: 'Markdown 文件', extensions: ['md', 'markdown'] },
+			{ name: '代码文件', extensions: ['cc', 'c', 'cpp', 'java', 'py', 'js', 'markdown', 'h', 'hpp', 'bdy', 'inc', 'pas', 'pp', 'cs', 'html', 'htm', 'css', 'sh', 'cmd', 'bat', 'lua', 'sql', ' as', 'vb', 'vbs', 'cmd', 'pl', 'php'] },
+			{ name: '文本文件', extensions: ['txt', 'log', 'in', 'out'] },
+			{ name: '任意文件', extensions: ['*'] }
+		] : [
+			{ name: '常见待打印文件', extensions: ['cc', 'c', 'cpp', 'java', 'py', 'js', 'markdown', 'h', 'hpp', 'bdy', 'inc', 'pas', 'pp', 'cs', 'html', 'htm', 'css', 'sh', 'cmd', 'bat', 'lua', 'sql', ' as', 'vb', 'vbs', 'cmd', 'pl', 'php', 'md', 'markdown', 'txt', 'log', 'in', 'out'] },
 			{ name: 'Markdown 文件', extensions: ['md', 'markdown'] },
 			{ name: '代码文件', extensions: ['cc', 'c', 'cpp', 'java', 'py', 'js', 'markdown', 'h', 'hpp', 'bdy', 'inc', 'pas', 'pp', 'cs', 'html', 'htm', 'css', 'sh', 'cmd', 'bat', 'lua', 'sql', ' as', 'vb', 'vbs', 'cmd', 'pl', 'php'] },
 			{ name: '文本文件', extensions: ['txt', 'log', 'in', 'out'] },
